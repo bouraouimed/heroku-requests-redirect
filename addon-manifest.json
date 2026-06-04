@@ -1,0 +1,16 @@
+{
+  "id": "requests-redirect",
+  "api": {
+    "config_vars": [
+      "REQUESTS_PROXY_URL"
+    ],
+    "password": "default-addon-password",
+    "sso_salt": "default-sso-salt",
+    "production": {
+      "base_url": "https://your-addon-production-url.com"
+    },
+    "test": {
+      "base_url": "http://localhost:5000"
+    }
+  }
+}
