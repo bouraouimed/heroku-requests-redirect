@@ -1,43 +1,39 @@
-# Requests Redirect Proxy (Heroku Add-on)
+# Requests Redirect (Heroku Add-on)
 
-A lightweight, flexible HTTP proxy service built with Flask and Python. This project is currently being developed into a fully-fledged **Heroku Add-on** that allows applications to proxy HTTP requests through a dedicated service, providing centralized request forwarding, CORS handling, and strict host-based access controls.
+A lightweight HTTP proxy Heroku Add-on built with Flask and SQLAlchemy.
 
-## Features
+This add-on allows Heroku users to seamlessly proxy traffic from their Heroku apps to a specific destination URL.
 
-- **Dynamic Request Proxying**: Transparently forwards all HTTP methods (GET, POST, PUT, DELETE, PATCH, etc.) and payload data to a destination URL.
-- **Configurable Access Controls**: Restrict incoming requests to specific clients using the `ALLOWED_HOST` configuration (verifying the origin, remote address, or host header).
-- **Environment-Driven Configuration**: Easily configurable via `.env` files or Heroku Config Vars.
-- **Heroku Add-on Ready (WIP)**: Being extended to support the Heroku Partner API for automated provisioning, deprovisioning, and seamless integration into any Heroku workflow.
+## How users install it
 
-## Configuration
+Users can provision your add-on to their app and specify the destination URL via the `--location` flag:
 
-This project relies on environment variables for configuration. You can create a `.env` file in the root directory:
-
-```dotenv
-# The target base URL where requests should be redirected
-ROOT_DEST_URL=https://my-destination-server
-
-# (Optional) The specific Host/Origin/IP allowed to make requests to this proxy
-ALLOWED_HOST=127.0.0.1
+```bash
+heroku addons:create requests-redirect --location=https://www.example.com
 ```
 
-## Running Locally
+Once installed, Heroku will set a `REQUESTS_PROXY_URL` config variable in their application environment. 
+Any requests sent to `REQUESTS_PROXY_URL/some-path` will be transparently forwarded to `https://www.example.com/some-path`.
+
+To update the location later, users can run:
+```bash
+heroku addons:upgrade requests-redirect --location=https://www.new-example.com
+```
+
+## Running the Add-on Provider Server Locally
+
+As the Add-on provider, you need to host this codebase so Heroku can communicate with it.
 
 1. Install the required dependencies:
    ```bash
    pip install -r requirements.txt
    ```
-2. Run the Flask application:
+2. Set up your `.env` file with the credentials provided by the Heroku Partner Portal:
+   ```dotenv
+   HEROKU_ADDON_ID=your-addon-id
+   HEROKU_ADDON_PASSWORD=your-addon-password
+   ```
+3. Run the Flask application:
    ```bash
    python app.py
    ```
-   *Alternatively, if using the Heroku CLI, you can run:*
-   ```bash
-   heroku local
-   ```
-
-## Next Steps
-
-- Implement the Heroku Add-on Partner API endpoints (`POST /heroku/resources`, `DELETE /heroku/resources/:id`).
-- Add Basic Authentication for the Add-on lifecycle events.
-- Implement a database layer to track provisioned Heroku resources.
