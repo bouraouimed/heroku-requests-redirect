@@ -94,32 +94,11 @@ def index(resource_id, path):
     headers.update(request.headers)
     headers.pop('Host', None)
 
-    if request.method == 'GET':
-        r = requests.get(DEST_URL, headers=headers, data=request.data)
-        return r.content, r.status_code
-
-    elif request.method == 'POST':
-        data = request.data or request.form
-        r = requests.post(DEST_URL, headers=headers, data=data)
-        return r.content, r.status_code
-
-    elif request.method == 'DELETE':
-        r = requests.delete(DEST_URL, headers=headers)
-        return r.content, r.status_code
-
-    elif request.method == 'PATCH':
-        data = request.data or request.form
-        r = requests.patch(DEST_URL, headers=headers, data=data)
-        return r.content, r.status_code
-
-    elif request.method == 'PUT':
-        data = request.data or request.form
-        r = requests.put(DEST_URL, headers=headers, data=data)
-        return r.content, r.status_code
-
-    elif request.method == 'OPTIONS':
-        r = requests.options(DEST_URL, headers=headers)
-        return r.content, r.status_code
-
-    else:
-        return ''
+    data = request.data or request.form
+    r = requests.request(
+        method=request.method,
+        url=DEST_URL,
+        headers=headers,
+        data=data
+    )
+    return r.content, r.status_code
